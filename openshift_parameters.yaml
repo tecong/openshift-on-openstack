@@ -1,29 +1,29 @@
 parameters:
-  ssh_key_name: default
-  bastion_image: rhel72
+  ssh_key_name: oshift-testi-avain
+  bastion_image: rhel72-ose-3.3
   bastion_flavor: m1.medium
-  master_image: rhel72
+  master_image: rhel72-ose-3.3
   master_flavor: m1.medium
-  infra_image: rhel72
+  infra_image: rhel72-ose-3.3
   infra_flavor: m1.medium
-  node_image: rhel72
+  node_image: rhel72-ose-3.3
   node_flavor: m1.medium
-  loadbalancer_image: rhel72
+  loadbalancer_image: rhel72-ose-3.3
   loadbalancer_flavor: m1.medium
 
-  external_network: ext_net
-  dns_nameserver: 8.8.4.4,8.8.8.8
+  external_network: Internal-Publish
+  dns_nameserver: 10.175.10.254
   node_count: 2
 
-  rhn_username: "Your RHN Username"
-  rhn_password: "Your RHN Password"
-  sat6_hostname: ""
-  sat6_organization: ""
-  sat6_activationkey: ""
-  rhn_pool: ''
+  rhn_username: "immontom"
+  rhn_password: "Passw0rd!"
+  rhn_pool: '8a85f981553443ce015535baa67d3070'
+#  sat6_hostname: "tecslrhs1.tieto.softlayer.local"
+#  sat6_organization: "TECO_DEV"
+#  sat6_activationkey: "RHEL7_OPENSHIFT_DEV_AK"
 
   deployment_type: openshift-enterprise
-  domain_name: "example.com"
+  domain_name: "tieto.softlayer.local"
   master_hostname: "openshift-master"
   node_hostname: "openshift-node"
   ssh_user: cloud-user
@@ -32,7 +32,7 @@ parameters:
   node_docker_volume_size_gb: 25
 
 resource_registry:
-  OOShift::LoadBalancer: loadbalancer_neutron.yaml
+  OOShift::LoadBalancer: loadbalancer_none.yaml
   OOShift::ContainerPort: sdn_openshift_sdn.yaml
   OOShift::IPFailover: ipfailover_none.yaml
   OOShift::DockerVolume: volume_docker.yaml

@@ -525,3 +525,8 @@ outputs:
   ip_address:
     description: IP address of the node
     value: {get_attr: [floating_ip, floating_ip_address]}
+  #Tommi added
+  private_ip_address:
+    description: Private fixed network ip address of the node
+    value: {get_attr: [port, fixed_ips, 0, ip_address]}
+    #value: {get_attr: [host, networks, fixed_subnet, 0]}

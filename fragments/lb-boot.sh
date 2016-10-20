@@ -15,6 +15,9 @@ set -o pipefail
 
 source /usr/local/share/openshift-on-openstack/common_functions.sh
 
+# Scan cinder volumes / immontom
+for host in `ls /sys/class/scsi_host`; do echo "- - -" > /sys/class/scsi_host/$host/scan; done
+
 # ==============================================================================
 # MAIN
 # ==============================================================================

@@ -19,6 +19,9 @@ set -x
 # Return the exit code of the last non-zero command in a pipe (or 0 on success)
 set -o pipefail
 
+# Scan cinder volumes / immontom
+for host in `ls /sys/class/scsi_host`; do echo "- - -" > /sys/class/scsi_host/$host/scan; done
+
 source /usr/local/share/openshift-on-openstack/common_functions.sh
 source /usr/local/share/openshift-on-openstack/common_openshift_functions.sh
 

@@ -108,7 +108,7 @@ os-collect-config --one-time --debug ||
     notify_failure "failed to run os-collect-config"
 
 # check that a valid metadata_url was set
-curl "$(grep metadata_url /etc/os-collect-config.conf |sed 's/metadata_url = //')" ||
+curl -k "$(grep metadata_url /etc/os-collect-config.conf |sed 's/metadata_url = //')" ||
     notify_failure "failed to connect to os-collect-config metadata_url"
 
 cat /etc/os-collect-config.conf

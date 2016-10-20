@@ -8,6 +8,7 @@ parameters:
     description: >
       size of a cinder volume in GB to allocate to docker for container/image storage
     type: number
+    default: 50
 
 resources:
   # Create an external volume to contain the Docker containers and images
