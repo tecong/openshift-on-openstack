@@ -104,6 +104,14 @@ parameters:
     constraints:
     - custom_constraint: neutron.network
 
+  # Added by Tommi
+  external_subnet:
+    type: string
+    description: >
+      The external subnet that provides floating IP addresses for the nodes
+    constraints:
+    - custom_constraint: neutron.subnet
+
   internal_subnet:
     type: string
     description: >
@@ -472,6 +480,7 @@ resources:
     properties:
       external_gateway_info:
         network: {get_param: external_network}
+      value_specs: { "router_type": "exclusive" }
 
   external_router_interface:
     type: OS::Neutron::RouterInterface
@@ -503,7 +512,7 @@ resources:
       fixed_network: {get_resource: fixed_network}
       fixed_subnet: {get_resource: fixed_subnet}
       external_network: {get_param: external_network}
-      loadbalancer_ip: {get_attr: [lb_floating_ip, floating_ip_address]}
+      loadbalancer_ip: {get_attr: [loadbalancer, loadbalancer_ip]}
 
   # VM Host definitions
   bastion_host:
@@ -698,7 +707,7 @@ resources:
           os_region_name: {get_param: os_region_name}
           loadbalancer_type: {get_param: loadbalancer_type}
           dns_forwarders: {get_param: dns_nameserver}
-          lb_ip: {get_attr: [lb_floating_ip, floating_ip_address]}
+#          lb_ip: {get_attr: [lb_floating_ip, floating_ip_address]}
           lb_hostname:
             str_replace:
               template: "%stackname%-%hostname%"
@@ -920,10 +929,10 @@ resources:
       # VRRP
       - protocol: 112
 
-  lb_floating_ip:
-    type: OS::Neutron::FloatingIP
-    properties:
-      floating_network: {get_param: external_network}
+#  lb_floating_ip:
+#    type: OS::Neutron::FloatingIP
+#    properties:
+#      floating_network: {get_param: external_network}
 
   loadbalancer:
     type:  OOShift::LoadBalancer
@@ -950,10 +959,13 @@ resources:
       ansible_public_key: {get_attr: [ansible_keys, public_key]}
       dns_ip: {get_attr: [bastion_floating_ip, floating_ip_address]}
       fixed_subnet: {get_resource: fixed_subnet}
-      members: {get_attr: [openshift_masters, host]}
+#     members: {get_attr: [openshift_masters, host]}
+#      single_lb_member_address: {get_attr: [ openshift_masters, networks, fixed_network, "0"]}
+      single_lb_member_address: {get_attr: [ openshift_masters, resource.0.private_ip_address ]}
       master_hostname: {get_attr: [openshift_masters, resource.0.hostname]}
-      floatingip_id: {get_resource: lb_floating_ip}
+#      floatingip_ip: {get_attr: [lb_floating_ip, floating_ip_address]}
       fixed_network: {get_resource: fixed_network}
+      floating_subnet: {get_param: external_subnet}
       fixed_subnet: {get_resource: fixed_subnet}
       extra_repository_urls: {get_param: extra_repository_urls}
       extra_docker_repository_urls: {get_param: extra_docker_repository_urls}
@@ -968,7 +980,7 @@ outputs:
 
   loadbalancer_ip:
     description: External IP address of the loadbalancer for master nodes.
-    value: {get_attr: [lb_floating_ip, floating_ip_address]}
+    value: {get_attr: [loadbalancer, loadbalancer_ip]}
 
   router_ip:
     description: External IP address of the OpenShift router.
@@ -1011,3 +1023,7 @@ outputs:
   master_ips:
     description: List of openshift master node IPs
     value: {get_attr: [openshift_masters, ip_address]}
+
+  master_lb_member_ips:
+    description: List of openshift master LB load balance target IPs
+    value: {get_attr: [openshift_masters, resource.0.private_ip_address]}

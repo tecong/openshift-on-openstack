@@ -12,6 +12,7 @@ parameters:
   loadbalancer_flavor: m1.medium
 
   external_network: Internal-Publish
+  external_subnet: Internal-Publish-Subnet 
   dns_nameserver: 10.175.10.254
   node_count: 2
 
@@ -32,7 +33,7 @@ parameters:
   node_docker_volume_size_gb: 25
 
 resource_registry:
-  OOShift::LoadBalancer: loadbalancer_dedicated.yaml
+  OOShift::LoadBalancer: loadbalancer_lbaasv2.yaml
   OOShift::ContainerPort: sdn_openshift_sdn.yaml
   OOShift::IPFailover: ipfailover_none.yaml
   OOShift::DockerVolume: volume_docker.yaml

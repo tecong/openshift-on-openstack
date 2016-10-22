@@ -99,11 +99,21 @@ parameters:
       This will be placed on each VM host in /root/.ssh/authorized_keys
     type: string
 
+  fixed_subnet:
+    description: >
+      The name or ID of the internal IPv4 space
+    type: string
+    constraints:
+    - custom_constraint: neutron.subnet
+
   single_lb_member_address:
     type: string
 
   master_hostname:
     type: string
+
+#  floatingip_ip:
+#    type: string
 
   fixed_network:
     description: >
@@ -111,6 +121,13 @@ parameters:
     type: string
     constraints:
     - custom_constraint: neutron.network
+
+  floating_subnet:
+    description: >
+      The name or ID of the external subnet
+    type: string
+    constraints:
+    - custom_constraint: neutron.subnet
 
   fixed_subnet:
     description: >
@@ -145,18 +162,17 @@ parameters:
 resources:
   lb:
     type: OS::Neutron::LBaaS::LoadBalancer
-#    vip_port_id: {get_param: floating_id}
     properties:
         name: master_node_balancer
 #        vip_address: {get_param: floatingip_ip}
-        vip_subnet: {get_param: fixed_subnet}
+        vip_subnet: {get_param: floating_subnet}
 
   listener:
     type: OS::Neutron::LBaaS::Listener
     properties:
       loadbalancer: {get_resource: lb}
       name: listener_8443
-      protocol: HTTPS
+      protocol: TCP
       protocol_port: 8443
 
   lb_pool:
@@ -188,7 +204,6 @@ resources:
       pool: {get_resource: lb_pool}
       protocol_port: 8443
       address: {get_param: single_lb_member_address}
-      subnet: {get_param: fixed_subnet}
 #      address: 192.168.0.4
 
   lb_monitor:
@@ -220,9 +235,5 @@ outputs:
           '%domainname%': {get_param: domain_name}
 
   loadbalancer_ip:
-    description: Load Balancer IP
-    value: {get_attr: [lb, vip_address ]} 
-
-  loadbalancer_port_id:
-    description: Load Balaner port id for floating ip association
-    value: {get_attr: [lb, vip_port_id]} 
+    description: Load Balancer external IP
+    value: {get-attr: [lb, vip_address ]} 

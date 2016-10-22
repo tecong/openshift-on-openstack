@@ -12,7 +12,6 @@ parameters:
   loadbalancer_flavor: m1.medium
 
   external_network: Internal-Publish
-  external_subnet: Internal-Publish-Subnet 
   dns_nameserver: 10.175.10.254
   node_count: 2
 

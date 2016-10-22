@@ -11,7 +11,7 @@ parameters:
   # This value is used to select the RPM repo for the OSE release to install
   ose_version:
     type: string
-    default: "3.2"
+    default: "3.3"
     description: >
       The version of OpenShift Enterprise to deploy
 
@@ -103,14 +103,6 @@ parameters:
       The external network that provides floating IP addresses for the nodes
     constraints:
     - custom_constraint: neutron.network
-
-  # Added by Tommi
-  external_subnet:
-    type: string
-    description: >
-      The external subnet that provides floating IP addresses for the nodes
-    constraints:
-    - custom_constraint: neutron.subnet
 
   internal_subnet:
     type: string
@@ -480,6 +472,7 @@ resources:
     properties:
       external_gateway_info:
         network: {get_param: external_network}
+      value_specs: { "router_type": "exclusive" }
 
   external_router_interface:
     type: OS::Neutron::RouterInterface
@@ -932,6 +925,13 @@ resources:
     type: OS::Neutron::FloatingIP
     properties:
       floating_network: {get_param: external_network}
+      port_id: {get_attr: [loadbalancer, loadbalancer_port_id]}
+
+#  lb_floating_ip_association:
+#    type: OS::Neutron::FloatingIPAssociation
+#    properties:
+#        floatingip_id: {get_resource: lb_floating_ip}
+#        port_id: {get_attr: [loadbalancer, loadbalancer_port_id]}
 
   loadbalancer:
     type:  OOShift::LoadBalancer
@@ -958,13 +958,11 @@ resources:
       ansible_public_key: {get_attr: [ansible_keys, public_key]}
       dns_ip: {get_attr: [bastion_floating_ip, floating_ip_address]}
       fixed_subnet: {get_resource: fixed_subnet}
-#     members: {get_attr: [openshift_masters, host]}
-#      single_lb_member_address: {get_attr: [ openshift_masters, networks, fixed_network, "0"]}
+      #members: {get_attr: [openshift_masters, host]}
       single_lb_member_address: {get_attr: [ openshift_masters, resource.0.private_ip_address ]}
       master_hostname: {get_attr: [openshift_masters, resource.0.hostname]}
-      floatingip_ip: {get_attr: [lb_floating_ip, floating_ip_address]}
+      #floatingip_id: {get_resource: lb_floating_ip}
       fixed_network: {get_resource: fixed_network}
-      floating_subnet: {get_param: external_subnet}
       fixed_subnet: {get_resource: fixed_subnet}
       extra_repository_urls: {get_param: extra_repository_urls}
       extra_docker_repository_urls: {get_param: extra_docker_repository_urls}
