@@ -699,7 +699,8 @@ resources:
           os_region_name: {get_param: os_region_name}
           loadbalancer_type: {get_param: loadbalancer_type}
           dns_forwarders: {get_param: dns_nameserver}
-          lb_ip: {get_attr: [lb_floating_ip, floating_ip_address]}
+          #lb_ip: {get_attr: [lb_floating_ip, floating_ip_address]}
+          lb_ip: {get_attr: [loadbalancer, loadbalancer_ip]}
           lb_hostname:
             str_replace:
               template: "%stackname%-%hostname%"
@@ -971,6 +972,9 @@ resources:
       skip_dns: {get_param: skip_dns}
 
 outputs:
+  bastion_ip:
+    description: IP address of Bastion host
+    value: {get_attr: [bastion_floating_ip, floating_ip_address]} 
   dns_ip:
     description: IP address of the DNS server OpenShift relies on
     value: {get_attr: [bastion_floating_ip, floating_ip_address]}
@@ -978,6 +982,10 @@ outputs:
   loadbalancer_ip:
     description: External IP address of the loadbalancer for master nodes.
     value: {get_attr: [lb_floating_ip, floating_ip_address]}
+
+  loadbalancer_tenant_ip:
+    description: Tenant network IP address of the loadbalancer for master nodes.
+    value: {get_attr: [loadbalancer, loadbalancer_ip]} 
 
   router_ip:
     description: External IP address of the OpenShift router.

@@ -1,8 +1,9 @@
 parameter_defaults:
    ldap_hostname: sln-mgmt-cs01.tieto.softlayer.local
    ldap_ip: 10.175.1.102
-   ldap_url: ldap://sln-mgmt-cs01.tieto.softlayer.local:389/CN=Users,DC=example,DC=openshift,DC=com?sAMAccountName
-   ldap_bind_dn: CN=immontom@tieto.softlayer.local,CN=Users,DC=example,DC=openshift,DC=com?sAMAccountName
+   ldap_url: ldap://10.175.1.102:389/OU=Users,OU=IBM Cloud,DC=tieto,DC=softlayer,DC=local?sAMAccountName
+   ldap_bind_dn: CN=Tommi Immonen,OU=Users,OU=IBM Cloud,DC=tieto,DC=softlayer,DC=local
    ldap_bind_password: Start123
+   ldap_insecure: true
 
 
