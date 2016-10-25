@@ -1,35 +1,37 @@
 parameters:
   ssh_key_name: oshift-testi-avain
-  bastion_image: rhel72-ose-3.3
+  bastion_image: CentOS7_1608_Origin_prepped
   bastion_flavor: m1.medium
-  master_image: rhel72-ose-3.3
+  master_image: CentOS7_1608_Origin_prepped
   master_flavor: m1.medium
-  infra_image: rhel72-ose-3.3
+  infra_image: CentOS7_1608_Origin_prepped
   infra_flavor: m1.medium
-  node_image: rhel72-ose-3.3
+  node_image: CentOS7_1608_Origin_prepped
   node_flavor: m1.medium
-  loadbalancer_image: rhel72-ose-3.3
+  loadbalancer_image: CentOS7_1608_Origin_prepped
   loadbalancer_flavor: m1.medium
 
   external_network: Internal-Publish
   dns_nameserver: 10.175.10.254
   node_count: 2
 
-  rhn_username: "immontom"
-  rhn_password: "Passw0rd!"
-  rhn_pool: '8a85f981553443ce015535baa67d3070'
-#  sat6_hostname: "tecslrhs1.tieto.softlayer.local"
-#  sat6_organization: "TECO_DEV"
-#  sat6_activationkey: "RHEL7_OPENSHIFT_DEV_AK"
+  rhn_username: ""
+  rhn_password: ""
+  rhn_pool: ''
+  sat6_hostname: ""
+  sat6_organization: ""
+  sat6_activationkey: ""
 
-  deployment_type: openshift-enterprise
+  deployment_type: origin
   domain_name: "teco.demo.tieto.com"
-  master_hostname: "oshift-master"
-  node_hostname: "oshift-node"
-  ssh_user: cloud-user
+  master_hostname: "origin-master"
+  node_hostname: "origin-node"
+  ssh_user: centos
   master_docker_volume_size_gb: 25
   infra_docker_volume_size_gb: 25
   node_docker_volume_size_gb: 25
+  openshift_ansible_git_url: https://github.com/openshift/openshift-ansible.git
+  openshift_ansible_git_rev: master
 
 resource_registry:
   OOShift::LoadBalancer: loadbalancer_lbaasv2.yaml

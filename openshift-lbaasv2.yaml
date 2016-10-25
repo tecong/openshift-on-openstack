@@ -108,13 +108,13 @@ parameters:
     type: string
     description: >
       The subnet used for openshift node-node and node-master communication
-    default: 192.168.0.0/24
+    default: 192.168.10.0/24
 
   container_subnet:
     type: string
     description: >
       The subnet used for openshift node-node communication
-    default: 10.0.0.0/24
+    default: 10.10.0.0/24
 
   dns_nameserver:
     type: comma_delimited_list
