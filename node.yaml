@@ -396,6 +396,18 @@ resources:
       - config: {get_resource: set_extra_docker_repos}
       - config: {get_resource: host_update}
       - config: {get_resource: node_boot}
+      - config: {get_resource: add_ca_certs}
+
+  # Install CA certs (for VIO HTTPS)
+  add_ca_certs:
+    type: OS::Heat::SoftwareConfig
+    properties:
+      group: script
+      config:
+        str_replace:
+          params:
+            $CACERT: {get_file: ../../teco-eu-ca-chain.pem}
+          template: {get_file: fragments/add_ca_certs.sh}
 
   # Compose the node identifiers: hostname and FQDN: provide them to cloud-init
   set_hostname:

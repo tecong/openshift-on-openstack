@@ -220,6 +220,19 @@ resources:
       - config: {get_attr: [config_agent, config]}
         type: multipart
       - config: {get_resource: bastion_boot}
+      - config: {get_resource: add_ca_certs}
+
+  # Install CA certs (for VIO HTTPS)
+  add_ca_certs:
+    type: OS::Heat::SoftwareConfig
+    properties:
+      group: script
+      config:
+        str_replace:
+          params:
+            $CACERT: {get_file: ../../teco-eu-ca-chain.pem}
+          template: {get_file: fragments/add_ca_certs.sh}
+
 
   # Install the DNS server and retrieve the Ansible playbooks for OpenShift
   bastion_boot:
@@ -275,7 +288,6 @@ resources:
           content: {get_param: ansible_public_key}
         ssh_authorized_keys:
         - {get_param: ansible_public_key}
-
 
   # Register the host with RHN for access to software packages
   rhn_register:

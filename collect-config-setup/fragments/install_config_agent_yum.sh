@@ -18,7 +18,7 @@ if ! yum info os-collect-config; then
 fi
 yum -y install os-collect-config python-zaqarclient os-refresh-config os-apply-config openstack-heat-templates python-oslo-log
 
-# os-collect-config tunkki
+# os-collect-config tunkki https://review.openstack.org/#/c/285959/
 sed -i -e 's/verify=CONF.cfn.ca_certificate)/verify=False)/g' /lib/python2.7/site-packages/os_collect_config/cfn.py > ~/tunkki.log 2> ~/tunkki.log
 # heat-config-notify tunkki
 sed -i -e 's/headers={\x27content-type\x27: None})/headers={\x27content-type\x27: None}, verify=False)/g' /usr/share/openstack-heat-templates/software-config/elements/heat-config/bin/heat-config-notify >> ~/tunkki.log 2>> ~/tunkki.log
